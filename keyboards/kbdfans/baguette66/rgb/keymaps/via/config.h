@@ -16,4 +16,14 @@
 
 #pragma once
 
+
 #define VIA_EEPROM_LAYOUT_OPTIONS_SIZE 2
+/* Mechanical locking support. Use KC_LCAP, KC_LNUM or KC_LSCR instead in keymap */
+#define LOCKING_SUPPORT_ENABLE
+/* Locking resynchronize hack */
+#define LOCKING_RESYNC_ENABLE
+
+#define RGBLIGHT_SLEEP
+
+#define BOOTMAGIC_ROW 0
+#define BOOTMAGIC_COLUMN 0
