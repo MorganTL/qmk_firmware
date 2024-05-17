@@ -20,3 +20,8 @@
 #define LOCKING_SUPPORT_ENABLE
 /* Locking resynchronize hack */
 #define LOCKING_RESYNC_ENABLE
+
+#define RGBLIGHT_SLEEP
+
+#define BOOTMAGIC_ROW 0
+#define BOOTMAGIC_COLUMN 0
