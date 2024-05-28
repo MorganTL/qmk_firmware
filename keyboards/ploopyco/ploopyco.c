@@ -1,4 +1,5 @@
-/* Copyright 2020 Christopher Courtney, aka Drashna Jael're  (@drashna) <drashna@live.com>
+/* Copyright 2025 MorganTL 
+ * Copyright 2020 Christopher Courtney, aka Drashna Jael're  (@drashna) <drashna@live.com>
  * Copyright 2019 Sunjun Kim
  * Copyright 2020 Ploopy Corporation
  *
@@ -67,6 +68,8 @@ bool  is_scroll_clicked    = false;
 bool  is_drag_scroll       = false;
 float scroll_accumulated_h = 0;
 float scroll_accumulated_v = 0;
+bool     is_drag_scroll_smart_mode = false;
+uint16_t scroll_counter = 0;
 
 #ifdef ENCODER_ENABLE
 uint16_t lastScroll        = 0; // Previous confirmed wheel event
@@ -140,6 +143,7 @@ void cycle_dpi(void) {
 
 report_mouse_t pointing_device_task_kb(report_mouse_t mouse_report) {
     if (is_drag_scroll) {
+        scroll_counter += abs(mouse_report.x) + abs(mouse_report.y);
         scroll_accumulated_h += (float)mouse_report.x / PLOOPY_DRAGSCROLL_DIVISOR_H;
         scroll_accumulated_v += (float)mouse_report.y / PLOOPY_DRAGSCROLL_DIVISOR_V;
 
@@ -161,6 +165,8 @@ report_mouse_t pointing_device_task_kb(report_mouse_t mouse_report) {
 
         mouse_report.x = 0;
         mouse_report.y = 0;
+    } else {
+        scroll_counter = 0;
     }
 
     return pointing_device_task_user(mouse_report);
@@ -187,16 +193,38 @@ bool process_record_kb(uint16_t keycode, keyrecord_t* record) {
         cycle_dpi();
     }
 
-    if (keycode == DRAG_SCROLL) {
-#ifdef PLOOPY_DRAGSCROLL_MOMENTARY
-        is_drag_scroll = record->event.pressed;
-#else
-        if (record->event.pressed) {
-            toggle_drag_scroll();
-        }
-#endif
+    switch (keycode) {
+        case DRAG_SCROLL_HOLD:
+            is_drag_scroll = record->event.pressed;
+            break;
+        case DRAG_SCROLL_TOGGLE:
+            if (record->event.pressed) {
+                is_drag_scroll ^= 1;
+            }
+            break;
+        case DRAG_SCROLL:
+            if (record->event.pressed) {
+                is_drag_scroll_smart_mode = true;
+                is_drag_scroll ^= 1;
+            }
+            break;
     }
 
+
+    if (is_drag_scroll && is_drag_scroll_smart_mode) {
+        // disable DRAG_SCROLL when pressing another other button
+        if (keycode == KC_BTN1 || keycode == KC_BTN2 || keycode == KC_BTN3 ||
+            keycode == KC_BTN4 || keycode == KC_BTN5) {
+            is_drag_scroll_smart_mode = false;
+            is_drag_scroll = false;
+        // enter hold mode when pressing DRAG_SCROLL & moving mouse
+        } else if (keycode == DRAG_SCROLL && !record->event.pressed &&
+                    scroll_counter > HOLD_MIN_SCROLL_COUNT) {
+            is_drag_scroll_smart_mode = false;
+            is_drag_scroll = false;
+        }
+    }
+    
     return true;
 }
 
