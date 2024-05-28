@@ -27,3 +27,15 @@
 #define SPI_SCK_PIN GP2
 #define SPI_MISO_PIN GP0
 #define SPI_MOSI_PIN GP7
+
+// see https://github.com/finrod09/qmk_userspace_features/tree/main/maccel for more detail
+// goto https://www.desmos.com/calculator/k9vr0y2gev for graphical acceleration function
+#define MOUSE_EXTENDED_REPORT
+#define MACCEL_TAKEOFF 2.0      // lower/higher value = curve takes off more smoothly/abruptly
+#define MACCEL_GROWTH_RATE 0.1 // lower/higher value = curve reaches its upper limit slower/faster 
+#define MACCEL_OFFSET 5       // lower/higher value = acceleration kicks in earlier/later
+#define MACCEL_LIMIT 0.15        // lower limit of accel curve (minimum acceleration factor)
+
+// DPI settings
+#define PLOOPY_DPI_OPTIONS { 800, 850, 900 }
+#define PLOOPY_DPI_DEFAULT 0

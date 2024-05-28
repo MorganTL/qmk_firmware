@@ -20,3 +20,14 @@
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [0] = LAYOUT( KC_BTN4, KC_BTN5, DRAG_SCROLL, KC_BTN2, KC_BTN1, KC_BTN3 )
 };
+
+#ifdef MACCEL_ENABLE
+    #include "maccel/maccel.h"
+#endif
+
+report_mouse_t pointing_device_task_user(report_mouse_t mouse_report) {
+    // ...
+#ifdef MACCEL_ENABLE
+    return pointing_device_task_maccel(mouse_report);
+#endif
+}
