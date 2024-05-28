@@ -30,3 +30,10 @@
 #define SPI_SCK_PIN GP2
 #define SPI_MISO_PIN GP0
 #define SPI_MOSI_PIN GP7
+
+// DPI settings
+#define PLOOPY_DPI_OPTIONS { 400, 800, 900 }
+#define PLOOPY_DPI_DEFAULT 0
+
+// hold to drag scroll
+#define PLOOPY_DRAGSCROLL_MOMENTARY 1
