@@ -118,21 +118,22 @@ bool process_record_kb(uint16_t keycode, keyrecord_t* record) {
         pointing_device_set_cpi(dpi_array[keyboard_config.dpi_config]);
     }
 
-    if (keycode == DRAG_SCROLL) {
-#ifdef PLOOPY_DRAGSCROLL_MOMENTARY
-        is_drag_scroll = record->event.pressed;
-#else
-        if (record->event.pressed)
-        {
-            is_drag_scroll ^= 1;
-        }
-#endif
+    switch (keycode){
+        case DRAG_SCROLL_HOLD:
+            is_drag_scroll = record->event.pressed;
+            break;
+        case DRAG_SCROLL_TOGGLE:
+            if (record->event.pressed) {
+                is_drag_scroll ^= 1;
+            }
+            break;;
+    }
+
 #ifdef PLOOPY_DRAGSCROLL_FIXED
         pointing_device_set_cpi(is_drag_scroll ? PLOOPY_DRAGSCROLL_DPI : dpi_array[keyboard_config.dpi_config]);
 #else
         pointing_device_set_cpi(is_drag_scroll ? (dpi_array[keyboard_config.dpi_config] * PLOOPY_DRAGSCROLL_MULTIPLIER) : dpi_array[keyboard_config.dpi_config]);
 #endif
-    }
 
     return true;
 }
