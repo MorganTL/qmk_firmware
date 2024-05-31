@@ -144,10 +144,12 @@ bool process_record_kb(uint16_t keycode, keyrecord_t* record) {
     if (is_drag_scroll && smart_mode) {
         if (keycode == KC_BTN1 || keycode == KC_BTN2 || keycode == KC_BTN3 ||
             keycode == KC_BTN4 || keycode == KC_BTN5) {
+            smart_mode = false;
             is_drag_scroll = false;
         // enter hold mode when pressing DRAG_SCROLL & moving mouse
         } else if (keycode == DRAG_SCROLL && !record->event.pressed &&
                     scroll_counter > HOLD_MIN_SCROLL_COUNT) {
+            smart_mode = false;
             is_drag_scroll = false;
         }
     }
