@@ -58,6 +58,8 @@ uint16_t          dpi_array[] = PLOOPY_DPI_OPTIONS;
 
 // Trackball State
 bool     is_drag_scroll    = false;
+bool     smart_mode = false;
+uint16_t scroll_counter = 0;
 
 // drag scroll divisor state
 int8_t drag_scroll_x_semaphore = 0;
@@ -65,6 +67,7 @@ int8_t drag_scroll_y_semaphore = 0;
 
 report_mouse_t pointing_device_task_kb(report_mouse_t mouse_report) {
     if (is_drag_scroll) {
+        scroll_counter += abs(mouse_report.x) + abs(mouse_report.y);
         int16_t mouse_report_x_temp = mouse_report.x;
         int16_t mouse_report_y_temp = mouse_report.y;
         int16_t mouse_report_x_calc = 0;
@@ -102,6 +105,8 @@ report_mouse_t pointing_device_task_kb(report_mouse_t mouse_report) {
 #endif
         mouse_report.x = 0;
         mouse_report.y = 0;
+    } else {
+        scroll_counter = 0;
     }
 
     return pointing_device_task_user(mouse_report);
@@ -126,7 +131,25 @@ bool process_record_kb(uint16_t keycode, keyrecord_t* record) {
             if (record->event.pressed) {
                 is_drag_scroll ^= 1;
             }
-            break;;
+            break;
+        case DRAG_SCROLL:
+            if (record->event.pressed) {
+                smart_mode = true;
+                is_drag_scroll ^= 1;
+            }
+            break;
+    }
+
+    // based on https://gist.github.com/antifuchs/760ba90a82b22a057e32a3e994425a7c
+    if (is_drag_scroll && smart_mode) {
+        if (keycode == KC_BTN1 || keycode == KC_BTN2 || keycode == KC_BTN3 ||
+            keycode == KC_BTN4 || keycode == KC_BTN5) {
+            is_drag_scroll = false;
+        // enter hold mode when pressing DRAG_SCROLL & moving mouse
+        } else if (keycode == DRAG_SCROLL && !record->event.pressed &&
+                    scroll_counter > HOLD_MIN_SCROLL_COUNT) {
+            is_drag_scroll = false;
+        }
     }
 
 #ifdef PLOOPY_DRAGSCROLL_FIXED

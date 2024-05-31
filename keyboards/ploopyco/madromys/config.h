@@ -39,3 +39,6 @@
 // DPI settings
 #define PLOOPY_DPI_OPTIONS { 800, 850, 900 }
 #define PLOOPY_DPI_DEFAULT 0
+
+// smart hold mode settings
+#define HOLD_MIN_SCROLL_COUNT 5
