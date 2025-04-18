@@ -22,7 +22,14 @@
     let
       system = "x86_64-linux";
       pkgs = import nixpkgs { inherit system; };
-      keyboard-set =
+
+      check-qmk-exist = ''
+        if ! [ -x "$(command -v qmk )" ]; then
+          echo 'Error: qmk is not installed.' >&2
+          exit 1
+        fi
+      '';
+      keyboard-factory =
         {
           keyboard,
           keymap,
@@ -31,12 +38,12 @@
           name = pkgs.lib.replaceStrings [ "/" ] [ "-" ] "${keyboard}-${keymap}";
           # bracket is necessary to coerce the builder function to the path
           paths = [
-            (pkgs.writeScriptBin "build-${name}" ''
-              qmk compile -kb ${keyboard} -km ${keymap} -j $NIX_BUILD_CORES
-            '')
-            (pkgs.writeShellScriptBin "flash-${name}" ''
-              qmk flash -kb ${keyboard} -km ${keymap}
-            '')
+            (pkgs.writeScriptBin "build-${name}" (
+              check-qmk-exist + ''qmk compile -kb ${keyboard} -km ${keymap} -j $NIX_BUILD_CORES''
+            ))
+            (pkgs.writeShellScriptBin "flash-${name}" (
+              check-qmk-exist + ''qmk flash -kb ${keyboard} -km ${keymap} -j $NIX_BUILD_CORES''
+            ))
           ];
         };
     in
@@ -73,15 +80,15 @@
           (pkgs.qmk.overrideAttrs (oldAttrs: {
             propagatedBuildInputs = oldAttrs.propagatedBuildInputs ++ [ pkgs.python3.pkgs.appdirs ];
           }))
-          (keyboard-set {
+          (keyboard-factory {
             keyboard = "ploopyco/madromys";
             keymap = "via";
           })
-          (keyboard-set {
+          (keyboard-factory {
             keyboard = "iv_works/av4_hotswap";
             keymap = "via";
           })
-          (keyboard-set {
+          (keyboard-factory {
             keyboard = "toffee_studio/blueberry";
             keymap = "via";
           })
