@@ -64,7 +64,8 @@
         name = "qmk";
         shellHook = ''
           ${self.checks.${system}.default.shellHook}
-          qmk setup
+          qmk setup -y
+          echo -e "type \033[0;32mbuild-keyboard-keymap\033[0m or \033[0;32mflash-keyboard-keymap\033[0m to build and flash the keyboard firmware respectively"
         '';
         packages = [
           self.checks.${system}.default.enabledPackages
