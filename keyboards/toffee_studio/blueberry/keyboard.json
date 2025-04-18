@@ -24,13 +24,14 @@
             "christmas": true,
             "static_gradient": true,
             "alternating": true
-        }
+        },
+        "sleep": true
     },
     "build": {
         "lto": true
     },
     "features": {
-        "bootmagic": false,
+        "bootmagic": true,
         "command": false,
         "console": false,
         "extrakey": true,
