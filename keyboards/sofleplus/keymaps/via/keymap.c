@@ -148,6 +148,8 @@ Host LED status (capslock) and layer from 1 to 8 only. layer 0 and layer 9 for p
 the indicator for rgb underglow only 
 */
 
+#ifdef RGB_MATRIX_ENABLE
+
 bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
     if (host_keyboard_led_state().caps_lock) {
         for (uint8_t i = 0; i <= 6; i++) {
@@ -229,6 +231,7 @@ bool rgb_matrix_indicators_advanced_user(uint8_t led_min, uint8_t led_max) {
 
     return false; // Allow RGB matrix to handle colors when no indicators are active
 }
+#endif
 
 
 
