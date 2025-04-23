@@ -92,6 +92,10 @@
             keyboard = "toffee_studio/blueberry";
             keymap = "via";
           })
+          (keyboard-factory {
+            keyboard = "sofleplus";
+            keymap = "via";
+          })
         ];
       };
     };
