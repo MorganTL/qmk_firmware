@@ -30,3 +30,10 @@
 
 #define ENCODER_A_PINS { GP26 }
 #define ENCODER_B_PINS { GP28 }
+
+// DPI settings
+#define PLOOPY_DPI_OPTIONS { 400, 800, 900 }
+#define PLOOPY_DPI_DEFAULT 0
+
+// smart hold mode settings
+#define HOLD_MIN_SCROLL_COUNT 5
