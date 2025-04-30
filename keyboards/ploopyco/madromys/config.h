@@ -37,3 +37,4 @@
 
 // smart hold mode settings
 #define HOLD_MIN_SCROLL_COUNT 5
+#define PLOOPY_DRAGSCROLL_INVERT
