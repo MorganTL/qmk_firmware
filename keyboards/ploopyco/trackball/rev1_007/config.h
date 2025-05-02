@@ -30,7 +30,7 @@
 
 #define ENCODER_A_PINS { GP26 }
 #define ENCODER_B_PINS { GP28 }
-#define ENCODER_MAP_KEY_DELAY 50
+#define ENCODER_RESOLUTION 4
 
 // DPI settings
 #define PLOOPY_DPI_OPTIONS { 400, 800, 900 }
