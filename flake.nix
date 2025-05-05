@@ -82,11 +82,11 @@
           }))
           (keyboard-factory {
             keyboard = "ploopyco/madromys";
-            keymap = "via";
+            keymap = "koi";
           })
           (keyboard-factory {
             keyboard = "ploopyco/trackball/rev1_007";
-            keymap = "via";
+            keymap = "koi";
           })
           (keyboard-factory {
             keyboard = "iv_works/av4_hotswap";
