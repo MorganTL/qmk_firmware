@@ -50,3 +50,80 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
     }
     return false;
 }
+
+// OLED setup
+const char PROGMEM qmk_logo[] = {
+    // https://joric.github.io/qle/
+    // Like C str, this MUST be null terminated
+    // ASCII encoding: 0x0A = next line, 0x00 = null, >0x7F are custom bitmaps
+    0x0A,
+    0x81, 0x82, 0x83, 0x84, 0x85, 0x86, 0x87, 0x88, 0x89, 0x0A,
+    0xA1, 0xA2, 0xA3, 0xA4, 0xA5, 0xA6, 0xA7, 0xA8, 0xA9, 0x0A,
+    0xC1, 0xC2, 0xC3, 0xC4, 0xC5, 0xC6, 0xC7, 0xC8, 0xC9, 0x0A,
+    0x00,
+};
+
+void user_render(void) {
+    oled_write_ln_P(qmk_logo, false);
+
+    // Layer status
+    oled_write_ln_P(PSTR("LAYER"), false);
+    switch (get_highest_layer(layer_state)) {
+        case 0:
+            oled_write_ln_P(PSTR("Base"), false);
+            break;
+        case 1:
+            oled_write_ln_P(PSTR("Symbol"), false);
+            break;
+        case 2:
+            oled_write_ln_P(PSTR("Vim"), false);
+            break;
+        default:
+            oled_write_ln_P(PSTR("Undef"), false);
+            break;
+    }
+    oled_write_P(PSTR("\n"), false);
+
+    // Modifier status
+    oled_write_ln_P(PSTR("MOD"), false);
+    uint8_t status = get_mods();
+    oled_write_P(PSTR("Ctrl"), status & MOD_MASK_CTRL);
+    oled_write_P(PSTR(" "), false);
+    oled_write_P(PSTR("Shift"), status & MOD_MASK_SHIFT);
+    oled_write_P(PSTR("Alt"), status & MOD_MASK_ALT);
+    oled_write_P(PSTR("  "), false);
+    oled_write_P(PSTR("Super\n"), status & MOD_MASK_GUI);
+}
+
+// Normal screen
+oled_rotation_t oled_init_user(oled_rotation_t rotation) {
+    return OLED_ROTATION_0;
+}
+
+bool oled_task_user(void) {
+    // The SH1107 does NOT support oled_scroll
+    user_render();
+    return false;
+}
+
+// Bootloader screen
+void oled_render_boot(bool bootloader) {
+    oled_clear();
+    oled_set_cursor(0, 0);
+
+    oled_write_ln_P(qmk_logo, false);
+    if (bootloader) {
+        oled_write_ln_P(PSTR("LINK ERGO"), false);
+        oled_write_ln_P(PSTR("BOOTLOADER\n"), false);
+        oled_write_P(PSTR("Awaiting\nnew fw..."), false);
+    } else {
+        oled_write_P(PSTR("Rebooting\n..."), false);
+    }
+    oled_render_dirty(true);
+}
+
+bool shutdown_user(bool jump_to_bootloader) {
+    oled_render_boot(jump_to_bootloader);
+    // false to not process kb level
+    return false;
+}
