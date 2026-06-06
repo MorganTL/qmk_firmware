@@ -100,6 +100,10 @@
             keyboard = "sofleplus";
             keymap = "via";
           })
+          (keyboard-factory {
+            keyboard = "cannonkeys/link";
+            keymap = "koi";
+          })
         ];
       };
     };
