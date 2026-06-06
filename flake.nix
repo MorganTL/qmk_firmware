@@ -39,10 +39,10 @@
           # bracket is necessary to coerce the builder function to the path
           paths = [
             (pkgs.writeScriptBin "build-${name}" (
-              check-qmk-exist + ''qmk compile -kb ${keyboard} -km ${keymap} -j $NIX_BUILD_CORES''
+              check-qmk-exist + "qmk compile -kb ${keyboard} -km ${keymap} -j $NIX_BUILD_CORES"
             ))
             (pkgs.writeShellScriptBin "flash-${name}" (
-              check-qmk-exist + ''qmk flash -kb ${keyboard} -km ${keymap} -j $NIX_BUILD_CORES''
+              check-qmk-exist + "qmk flash -kb ${keyboard} -km ${keymap} -j $NIX_BUILD_CORES"
             ))
           ];
         };
